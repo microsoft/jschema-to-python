@@ -1,6 +1,7 @@
 import argparse
 
 from jschema_to_python.object_model_module_generator import ObjectModelModuleGenerator
+from jschema_to_python import __version__
 
 def main():
     parser = init_parser()
@@ -10,6 +11,9 @@ def main():
 
     generator = ObjectModelModuleGenerator(args)
     generator.generate()
+
+    if (args.verbose > 0):
+        print('Done.')
 
 def init_parser():
     parser = argparse.ArgumentParser(description='Generate source code for a set of Python classes from a JSON schema.')
@@ -32,6 +36,7 @@ def init_parser():
 
 def display_args(args):
     if (args.verbose > 0):
+        print('{}: JSON schema to Python object model generator, version {}'.format(__package__, __version__))
         print('Generating Python classes...')
     if (args.verbose > 1):
         print('    from JSON schema {}'.format(args.schema_path))
