@@ -43,7 +43,10 @@ class ObjectModelModuleGenerator():
         return util.unpickle_file(schema_path)
 
     def read_code_gen_hints(self, hints_file_path):
-        if hints_file_path is None or not os.path.exists(hints_file_path):
+        if hints_file_path is None:
             return None
+
+        if not os.path.exists(hints_file_path):
+            util.exit_with_error('code generation hints file {} does not exist', hints_file_path)
 
         return util.unpickle_file(hints_file_path)
