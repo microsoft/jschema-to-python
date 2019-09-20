@@ -1,4 +1,5 @@
 from jschema_to_python.python_file_generator import PythonFileGenerator
+import jschema_to_python.utilities as util
 
 class ClassGenerator(PythonFileGenerator):
     def __init__(self, class_schema, class_name, code_gen_hints, output_directory):
@@ -49,7 +50,7 @@ class ClassGenerator(PythonFileGenerator):
             for schema_property_name in self.class_schema['required']:
                 python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
                 self.write_formatted_line('        if {} is None:', python_property_name)
-                self.write_formatted_line('            missing_properties.append(\'{}\')', python_property_name)
+                self.write_formatted_line('            missing_properties.append({})', util.quote(python_property_name))
 
             self.write_formatted_line('        if len(missing_properties) > 0:')
             self.write_formatted_line('            raise Exception(\'required properties of class {} were not provided: {{}}\'.format(\', \'.join(missing_properties)))', self.class_name)
@@ -67,9 +68,9 @@ class ClassGenerator(PythonFileGenerator):
             if 'type' in keys:
                 type = property_schema['type']
                 if type == 'string':
-                    default = '\'{}\''.format(default)
+                    default = util.quote(default)
             elif 'enum' in keys:
-                default = '\'{}\''.format(default)
+                default = util.quote(default)
             return default
 
         return 'None'
