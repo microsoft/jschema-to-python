@@ -63,10 +63,13 @@ class ClassGenerator(PythonFileGenerator):
     def make_initializer(self, property_schema):
         if 'default' in property_schema.keys():
             default = property_schema['default']
-            if 'type' in property_schema.keys():
+            keys = property_schema.keys()
+            if 'type' in keys:
                 type = property_schema['type']
                 if type == 'string':
                     default = '\'{}\''.format(default)
+            elif 'enum' in keys:
+                default = '\'{}\''.format(default)
             return default
 
         return 'None'
