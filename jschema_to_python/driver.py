@@ -23,6 +23,8 @@ def init_parser():
     parser.add_argument('-o', '--output-directory',
                         help='directory in which the generated classes will be created',
                         required=True)
+    parser.add_argument('-m', '--module-name',
+                        help='name of the module containing the object model classes')
     parser.add_argument('-r', '--root-class-name',
                         help='the name of the class at the root of the object model represented by the schema',
                         required=True)
@@ -40,8 +42,9 @@ def display_args(args):
         print('Generating Python classes...')
     if (args.verbose > 1):
         print('    from JSON schema {}'.format(args.schema_path))
-        print('    to root class {}'.format(args.root_class_name))
+        print('    to module {}'.format(args.module_name))
         print('    in directory {}'.format(args.output_directory))
+        print('    with root class {}'.format(args.root_class_name))
         if not (args.hints_file_path is None):
             print('    with code generation hints from {}'.format(args.hints_file_path))
 

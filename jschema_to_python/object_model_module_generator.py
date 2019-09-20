@@ -8,6 +8,7 @@ class ObjectModelModuleGenerator():
     def __init__(self, args):
         util.create_directory(args.output_directory, args.force)
         self.output_directory = args.output_directory
+        self.module_name = args.module_name
         self.root_schema = self.read_schema(args.schema_path)
         self.code_gen_hints = self.read_code_gen_hints(args.hints_file_path)
         self.root_class_name = args.root_class_name
@@ -18,7 +19,7 @@ class ObjectModelModuleGenerator():
         self.generate_init_file()
 
     def generate_init_file(self):
-        init_file_generator = InitFileGenerator(self.root_schema, self.root_class_name, self.output_directory)
+        init_file_generator = InitFileGenerator(self.module_name, self.root_schema, self.root_class_name, self.output_directory)
         init_file_generator.generate()
 
     def generate_root_class(self):

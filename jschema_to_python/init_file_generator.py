@@ -2,8 +2,9 @@ from jschema_to_python.python_file_generator import PythonFileGenerator
 from jschema_to_python.utilities import capitalize_first_letter
 
 class InitFileGenerator(PythonFileGenerator):
-    def __init__(self, root_schema, root_class_name, output_directory):
+    def __init__(self, module_name, root_schema, root_class_name, output_directory):
         super(InitFileGenerator, self).__init__(output_directory)
+        self.module_name = module_name
         self.root_schema = root_schema
         self.root_class_name = root_class_name
 
@@ -23,4 +24,4 @@ class InitFileGenerator(PythonFileGenerator):
                 self.write_import_statement(class_name)
 
     def write_import_statement(self, class_name):
-        self.write_formatted_line('from {} import {}', class_name, class_name)
+        self.write_formatted_line('from {}.{} import {}', self.module_name, class_name, class_name)
