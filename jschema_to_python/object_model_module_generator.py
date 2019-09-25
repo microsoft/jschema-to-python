@@ -44,7 +44,7 @@ class ObjectModelModuleGenerator():
         return util.unpickle_file(schema_path)
 
     def read_code_gen_hints(self, hints_file_path):
-        if hints_file_path is None:
+        if not hints_file_path:
             return None
 
         if not os.path.exists(hints_file_path):
