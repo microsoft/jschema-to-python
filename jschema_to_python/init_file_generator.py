@@ -17,9 +17,9 @@ class InitFileGenerator(PythonFileGenerator):
     def write_import_statements(self):
         self.write_import_statement(self.root_class_name)
 
-        if 'definitions' in self.root_schema.keys():
+        if 'definitions' in self.root_schema:
             definition_schemas = self.root_schema['definitions']
-            for definition_key in definition_schemas.keys():
+            for definition_key in definition_schemas:
                 class_name = capitalize_first_letter(definition_key)
                 self.write_import_statement(class_name)
 

@@ -27,9 +27,9 @@ class ObjectModelModuleGenerator():
         class_generator.generate()
 
     def generate_definition_classes(self):
-        if 'definitions' in self.root_schema.keys():
+        if 'definitions' in self.root_schema:
             definition_schemas = self.root_schema['definitions']
-            for key in definition_schemas.keys():
+            for key in definition_schemas:
                 self.generate_definition_class(key, definition_schemas[key])
 
     def generate_definition_class(self, definition_key, definition_schema):

@@ -23,7 +23,7 @@ class ClassGenerator(PythonFileGenerator):
         self.write_formatted_line('class {}(object):', self.class_name)
 
     def write_class_description(self):
-        if 'description' in self.class_schema.keys():
+        if 'description' in self.class_schema:
             self.write_formatted_line('    """{}"""', self.class_schema['description'])
 
     def write_constructor(self):
@@ -34,7 +34,7 @@ class ClassGenerator(PythonFileGenerator):
     def write_constructor_parameters(self):
         self.file_obj.write('    def __init__(self')
 
-        for schema_property_name in self.class_schema['properties'].keys():
+        for schema_property_name in self.class_schema['properties']:
             self.file_obj.write(',\n')
             python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
             property_schema = self.class_schema['properties'][schema_property_name]
@@ -44,7 +44,7 @@ class ClassGenerator(PythonFileGenerator):
         self.file_obj.write('):\n')
 
     def write_required_property_checks(self):
-        if 'required' in self.class_schema.keys():
+        if 'required' in self.class_schema:
             self.file_obj.write('\n')
             self.write_formatted_line('        missing_properties = []')
             for schema_property_name in self.class_schema['required']:
@@ -57,14 +57,14 @@ class ClassGenerator(PythonFileGenerator):
 
     def write_attribute_assignments(self):
         self.file_obj.write('\n')
-        for schema_property_name in self.class_schema['properties'].keys():
+        for schema_property_name in self.class_schema['properties']:
             python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
             self.write_formatted_line('        self.{}={}', python_property_name, python_property_name)
 
     def make_initializer(self, property_schema):
-        if 'default' in property_schema.keys():
+        if 'default' in property_schema:
             default = property_schema['default']
-            keys = property_schema.keys()
+            keys = property_schema
             if 'type' in keys:
                 type = property_schema['type']
                 if type == 'string':
@@ -84,7 +84,7 @@ class ClassGenerator(PythonFileGenerator):
             return property_name_hint['arguments']['pythonPropertyName']
 
     def get_hint(self, hint_key, hint_kind):
-        if self.code_gen_hints is None or hint_key not in self.code_gen_hints.keys():
+        if self.code_gen_hints is None or hint_key not in self.code_gen_hints:
             return None
 
         hint_array = self.code_gen_hints[hint_key]
