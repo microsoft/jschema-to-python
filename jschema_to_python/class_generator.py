@@ -23,8 +23,9 @@ class ClassGenerator(PythonFileGenerator):
         self.write_formatted_line('class {}(object):', self.class_name)
 
     def write_class_description(self):
-        if 'description' in self.class_schema:
-            self.write_formatted_line('    """{}"""', self.class_schema['description'])
+        description = self.class_schema.get('description')
+        if description:
+            self.write_formatted_line('    """{}"""', description)
 
     def write_constructor(self):
         self.write_constructor_parameters()
@@ -44,10 +45,11 @@ class ClassGenerator(PythonFileGenerator):
         self.file_obj.write('):\n')
 
     def write_required_property_checks(self):
-        if 'required' in self.class_schema:
+        required = self.class_schema.get('required')
+        if required:
             self.file_obj.write('\n')
             self.write_formatted_line('        missing_properties = []')
-            for schema_property_name in self.class_schema['required']:
+            for schema_property_name in required:
                 python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
                 self.write_formatted_line('        if {} is None:', python_property_name)
                 self.write_formatted_line('            missing_properties.append({})', util.quote(python_property_name))
@@ -62,14 +64,13 @@ class ClassGenerator(PythonFileGenerator):
             self.write_formatted_line('        self.{}={}', python_property_name, python_property_name)
 
     def make_initializer(self, property_schema):
-        if 'default' in property_schema:
-            default = property_schema['default']
-            keys = property_schema
-            if 'type' in keys:
-                type = property_schema['type']
+        default = property_schema.get('default')
+        if default:
+            type = property_schema.get('type')
+            if type:
                 if type == 'string':
                     default = util.quote(default)
-            elif 'enum' in keys:
+            elif property_schema.get('enum'):
                 default = util.quote(default)
             return default
 
