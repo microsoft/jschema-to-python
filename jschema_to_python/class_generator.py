@@ -57,7 +57,7 @@ class ClassGenerator(PythonFileGenerator):
             for schema_property_name in required:
                 python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
                 print('        if ' + python_property_name + ' is None:')
-                print('            missing_properties.append(' +  util.quote(python_property_name) + ')')
+                print('            missing_properties.append(' +  repr(python_property_name) + ')')
 
             print('        if len(missing_properties) > 0:')
             print('            joined_properties = \', \'.join(missing_properties)')
@@ -75,9 +75,9 @@ class ClassGenerator(PythonFileGenerator):
             type = property_schema.get('type')
             if type:
                 if type == 'string':
-                    default = util.quote(default)
+                    default = repr(default)
             elif property_schema.get('enum'):
-                default = util.quote(default)
+                default = repr(default)
             return default
 
         return 'None'

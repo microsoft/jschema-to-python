@@ -16,9 +16,6 @@ def create_directory(directory, force):
 
     os.makedirs(directory)
 
-def quote(s):
-    return '\'{}\''.format(s)
-
 def unpickle_file(path):
     with open(path, mode='rt', encoding='utf-8') as file_obj:
         contents = file_obj.read()
