@@ -14,7 +14,7 @@ class ClassGenerator(PythonFileGenerator):
 
     def generate(self):
         file_path = self.make_class_file_path()
-        with open(file_path, 'w') as sys.stdout:
+        with open(file_path, 'w', encoding='utf-8') as sys.stdout:
             self.write_generation_comment()
             self.write_class_declaration()
             self.write_class_description()

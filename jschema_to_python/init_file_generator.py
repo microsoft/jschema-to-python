@@ -14,7 +14,7 @@ class InitFileGenerator(PythonFileGenerator):
 
     def generate(self):
         file_path = self.make_output_file_path('__init__.py')
-        with open(file_path, 'w') as sys.stdout:
+        with open(file_path, 'w', encoding='utf-8') as sys.stdout:
             self.write_generation_comment()
             self.write_import_statements()
 
