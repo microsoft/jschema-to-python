@@ -28,4 +28,4 @@ class InitFileGenerator(PythonFileGenerator):
                 self.write_import_statement(class_name)
 
     def write_import_statement(self, class_name):
-        self.write_formatted_line('from {}.{} import {}', self.module_name, class_name, class_name)
+        print('from ' + self.module_name + '.' + class_name + ' import ' + class_name)
