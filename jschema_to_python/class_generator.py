@@ -1,3 +1,4 @@
+import sys
 from jschema_to_python.python_file_generator import PythonFileGenerator
 import jschema_to_python.utilities as util
 
@@ -8,9 +9,12 @@ class ClassGenerator(PythonFileGenerator):
         self.class_name = class_name
         self.code_gen_hints = code_gen_hints
 
+    def __del__(self):
+        sys.stdout = sys.__stdout__
+
     def generate(self):
         file_path = self.make_class_file_path()
-        with open(file_path, 'w') as self.file_obj:
+        with open(file_path, 'w') as sys.stdout:
             self.write_generation_comment()
             self.write_class_declaration()
             self.write_class_description()
@@ -33,21 +37,22 @@ class ClassGenerator(PythonFileGenerator):
         self.write_attribute_assignments()
 
     def write_constructor_parameters(self):
-        self.file_obj.write('    def __init__(self')
+        result = '    def __init__(self'
 
         for schema_property_name in self.class_schema['properties']:
-            self.file_obj.write(',\n')
+            result += ',\n'
             python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
             property_schema = self.class_schema['properties'][schema_property_name]
             initializer = self.make_initializer(property_schema)
-            self.file_obj.write('        {}={}'.format(python_property_name, initializer))
+            result += '        {}={}'.format(python_property_name, initializer)
 
-        self.file_obj.write('):\n')
+        result += '):'
+        print(result)
 
     def write_required_property_checks(self):
         required = self.class_schema.get('required')
         if required:
-            self.file_obj.write('\n')
+            print()
             self.write_formatted_line('        missing_properties = []')
             for schema_property_name in required:
                 python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
@@ -58,7 +63,7 @@ class ClassGenerator(PythonFileGenerator):
             self.write_formatted_line('            raise Exception(\'required properties of class {} were not provided: {{}}\'.format(\', \'.join(missing_properties)))', self.class_name)
 
     def write_attribute_assignments(self):
-        self.file_obj.write('\n')
+        print()
         for schema_property_name in self.class_schema['properties']:
             python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
             self.write_formatted_line('        self.{}={}', python_property_name, python_property_name)
