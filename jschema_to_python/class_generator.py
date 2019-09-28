@@ -21,7 +21,11 @@ class ClassGenerator(PythonFileGenerator):
             self.write_constructor()
 
     def make_class_file_path(self):
-        return self.make_output_file_path(self.class_name + '.py')
+        # The leading underscore indicates that users are not intended to import
+        # the class modules individually.
+        class_module_name = '_' + util.to_underscore_separated_name(self.class_name)
+
+        return self.make_output_file_path(class_module_name + '.py')
 
     def write_class_declaration(self):
         print('class ' + self.class_name + '(object):')

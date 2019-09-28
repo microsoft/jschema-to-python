@@ -16,6 +16,22 @@ def create_directory(directory, force):
 
     os.makedirs(directory)
 
+def to_underscore_separated_name(name):
+    result = ''
+    first_char = True
+    for ch in name:
+        if ch.islower():
+            next_char = ch
+        else:
+            next_char = ch.lower()
+            if first_char:
+                first_char = False
+            else:
+                next_char = '_' + next_char
+
+        result += next_char
+    return result
+
 def unpickle_file(path):
     with open(path, mode='rt', encoding='utf-8') as file_obj:
         contents = file_obj.read()

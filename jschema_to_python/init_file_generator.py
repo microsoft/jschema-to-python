@@ -1,6 +1,6 @@
 import sys
 from jschema_to_python.python_file_generator import PythonFileGenerator
-from jschema_to_python.utilities import capitalize_first_letter
+import jschema_to_python.utilities as util
 
 class InitFileGenerator(PythonFileGenerator):
     def __init__(self, module_name, root_schema, root_class_name, output_directory):
@@ -24,8 +24,9 @@ class InitFileGenerator(PythonFileGenerator):
         definition_schemas = self.root_schema.get('definitions')
         if definition_schemas:
             for definition_key in definition_schemas:
-                class_name = capitalize_first_letter(definition_key)
+                class_name = util.capitalize_first_letter(definition_key)
                 self.write_import_statement(class_name)
 
     def write_import_statement(self, class_name):
-        print('from ' + self.module_name + '.' + class_name + ' import ' + class_name)
+        class_module_name = '_' + util.to_underscore_separated_name(class_name)
+        print('from ' + self.module_name + '.' + class_module_name + ' import ' + class_name)
