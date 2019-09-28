@@ -6,6 +6,7 @@ class ClassGenerator(PythonFileGenerator):
     def __init__(self, class_schema, class_name, code_gen_hints, output_directory):
         super(ClassGenerator, self).__init__(output_directory)
         self.class_schema = class_schema
+        self.required_property_names = class_schema.get('required')
         self.class_name = class_name
         self.code_gen_hints = code_gen_hints
 
@@ -37,11 +38,27 @@ class ClassGenerator(PythonFileGenerator):
 
     def write_class_body(self):
         property_schemas = self.class_schema['properties']
+
+        # attrs requires that mandatory attributes be declared before optional
+        # attributes.
+        if self.required_property_names:
+            for schema_property_name in self.required_property_names:
+                python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
+                print('    ' + python_property_name + ' = attr.ib()')
+
         for schema_property_name in property_schemas:
-            python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
-            property_schema = property_schemas[schema_property_name]
-            initializer = self.make_initializer(property_schema)
-            print('    ' + python_property_name + ' = attr.ib(default=' + str(initializer) + ')')
+            if self.is_optional(schema_property_name):
+                python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
+                property_schema = property_schemas[schema_property_name]
+                default_setter = self.make_default_setter(property_schema)
+                print('    ' + python_property_name + ' = attr.ib(' + default_setter + ')')
+
+    def is_optional(self, schema_property_name):
+        return not self.required_property_names or schema_property_name not in self.required_property_names
+
+    def make_default_setter(self, property_schema):
+        initializer = self.make_initializer(property_schema)
+        return 'default=' + str(initializer)
 
     def make_initializer(self, property_schema):
         default = property_schema.get('default')
