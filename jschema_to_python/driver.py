@@ -13,7 +13,7 @@ def main():
     generator.generate()
 
     if args.verbose:
-        print('Done')
+        print('Done.')
 
 def init_parser():
     parser = argparse.ArgumentParser(description='Generate source code for a set of Python classes from a JSON schema.')
