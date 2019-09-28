@@ -60,7 +60,7 @@ class ClassGenerator(PythonFileGenerator):
                 print('        if ' + python_property_name + ' is None:')
                 print('            missing_properties.append(' +  repr(python_property_name) + ')')
 
-            print('        if len(missing_properties) > 0:')
+            print('        if missing_properties:')
             print('            joined_properties = \', \'.join(missing_properties)')
             print('            raise TypeError(\'required properties of class ' + self.class_name + ' were not provided: \' + joined_properties)')
 
