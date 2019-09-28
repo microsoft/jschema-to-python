@@ -28,5 +28,5 @@ class InitFileGenerator(PythonFileGenerator):
                 self.write_import_statement(class_name)
 
     def write_import_statement(self, class_name):
-        class_module_name = '_' + util.to_underscore_separated_name(class_name)
+        class_module_name = util.class_name_to_private_module_name(class_name)
         print('from ' + self.module_name + '.' + class_module_name + ' import ' + class_name)

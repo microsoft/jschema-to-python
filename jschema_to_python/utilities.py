@@ -32,6 +32,11 @@ def to_underscore_separated_name(name):
         result += next_char
     return result
 
+def class_name_to_private_module_name(class_name):
+    # The leading underscore indicates that users are not intended to import
+    # the class module individually.
+    return '_' + to_underscore_separated_name(class_name)
+
 def unpickle_file(path):
     with open(path, mode='rt', encoding='utf-8') as file_obj:
         contents = file_obj.read()
