@@ -62,7 +62,7 @@ class ClassGenerator(PythonFileGenerator):
 
             print('        if len(missing_properties) > 0:')
             print('            joined_properties = \', \'.join(missing_properties)')
-            print('            raise Exception(\'required properties of class ' + self.class_name + ' were not provided: \' + joined_properties)')
+            print('            raise TypeError(\'required properties of class ' + self.class_name + ' were not provided: \' + joined_properties)')
 
     def write_attribute_assignments(self):
         print()
