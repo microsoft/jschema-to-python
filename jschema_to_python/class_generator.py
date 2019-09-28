@@ -77,9 +77,10 @@ class ClassGenerator(PythonFileGenerator):
         hint_key = self.class_name + '.' + schema_property_name
         property_name_hint = self.get_hint(hint_key, 'PropertyNameHint')
         if not property_name_hint:
-            return schema_property_name
+            property_name = schema_property_name
         else:
-            return property_name_hint['arguments']['pythonPropertyName']
+            property_name = property_name_hint['arguments']['pythonPropertyName']
+        return util.to_underscore_separated_name(property_name)
 
     def get_hint(self, hint_key, hint_kind):
         if not self.code_gen_hints or hint_key not in self.code_gen_hints:

@@ -24,10 +24,9 @@ def to_underscore_separated_name(name):
             next_char = ch
         else:
             next_char = ch.lower()
-            if first_char:
-                first_char = False
-            else:
+            if not first_char:
                 next_char = '_' + next_char
+        first_char = False
 
         result += next_char
     return result
