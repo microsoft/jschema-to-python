@@ -16,11 +16,29 @@ def create_directory(directory, force):
 
     os.makedirs(directory)
 
-def quote(s):
-    return '\'{}\''.format(s)
+def to_underscore_separated_name(name):
+    result = ''
+    first_char = True
+    for ch in name:
+        if ch.islower():
+            next_char = ch
+        else:
+            next_char = ch.lower()
+            if first_char:
+                first_char = False
+            else:
+                next_char = '_' + next_char
+
+        result += next_char
+    return result
+
+def class_name_to_private_module_name(class_name):
+    # The leading underscore indicates that users are not intended to import
+    # the class module individually.
+    return '_' + to_underscore_separated_name(class_name)
 
 def unpickle_file(path):
-    with open(path) as file_obj:
+    with open(path, mode='rt', encoding='utf-8') as file_obj:
         contents = file_obj.read()
         return jsonpickle.decode(contents)
 

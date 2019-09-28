@@ -12,7 +12,7 @@ def main():
     generator = ObjectModelModuleGenerator(args)
     generator.generate()
 
-    if (args.verbose > 0):
+    if args.verbose:
         print('Done.')
 
 def init_parser():
@@ -37,16 +37,16 @@ def init_parser():
     return parser
 
 def display_args(args):
-    if (args.verbose > 0):
-        print('{}: JSON schema to Python object model generator, version {}'.format(__package__, __version__))
+    if args.verbose:
+        print(__package__ + ': JSON schema to Python object model generator, version ' + __version__)
         print('Generating Python classes...')
-    if (args.verbose > 1):
-        print('    from JSON schema {}'.format(args.schema_path))
-        print('    to module {}'.format(args.module_name))
-        print('    in directory {}'.format(args.output_directory))
-        print('    with root class {}'.format(args.root_class_name))
-        if not (args.hints_file_path is None):
-            print('    with code generation hints from {}'.format(args.hints_file_path))
+    if args.verbose > 1:
+        print('    from JSON schema ' + args.schema_path)
+        print('    to module ' + args.module_name)
+        print('    in directory ' + args.output_directory)
+        print('    with root class ' + args.root_class_name)
+        if args.hints_file_path:
+            print('    with code generation hints from ' + args.hints_file_path)
 
 if __name__ == '__main__':
     main()

@@ -6,14 +6,15 @@ from jschema_to_python.class_generator import ClassGenerator
 
 class ObjectModelModuleGenerator():
     def __init__(self, args):
-        util.create_directory(args.output_directory, args.force)
         self.output_directory = args.output_directory
+        self.force = args.force
         self.module_name = args.module_name
         self.root_schema = self.read_schema(args.schema_path)
         self.code_gen_hints = self.read_code_gen_hints(args.hints_file_path)
         self.root_class_name = args.root_class_name
 
     def generate(self):
+        util.create_directory(self.output_directory, self.force)
         self.generate_root_class()
         self.generate_definition_classes()
         self.generate_init_file()
@@ -27,9 +28,9 @@ class ObjectModelModuleGenerator():
         class_generator.generate()
 
     def generate_definition_classes(self):
-        if 'definitions' in self.root_schema.keys():
-            definition_schemas = self.root_schema['definitions']
-            for key in definition_schemas.keys():
+        definition_schemas = self.root_schema.get('definitions')
+        if definition_schemas:
+            for key in definition_schemas:
                 self.generate_definition_class(key, definition_schemas[key])
 
     def generate_definition_class(self, definition_key, definition_schema):
@@ -44,7 +45,7 @@ class ObjectModelModuleGenerator():
         return util.unpickle_file(schema_path)
 
     def read_code_gen_hints(self, hints_file_path):
-        if hints_file_path is None:
+        if not hints_file_path:
             return None
 
         if not os.path.exists(hints_file_path):
