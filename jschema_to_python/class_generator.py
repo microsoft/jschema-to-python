@@ -6,6 +6,9 @@ class ClassGenerator(PythonFileGenerator):
     def __init__(self, class_schema, class_name, code_gen_hints, output_directory):
         super(ClassGenerator, self).__init__(output_directory)
         self.class_schema = class_schema
+        self.required_property_names = class_schema.get('required')
+        if self.required_property_names:
+            self.required_property_names.sort()
         self.class_name = class_name
         self.code_gen_hints = code_gen_hints
 
@@ -14,17 +17,20 @@ class ClassGenerator(PythonFileGenerator):
 
     def generate(self):
         file_path = self.make_class_file_path()
-        with open(file_path, 'w', encoding='utf-8') as sys.stdout:
+        with open(file_path, 'w') as sys.stdout:
             self.write_generation_comment()
             self.write_class_declaration()
             self.write_class_description()
-            self.write_constructor()
+            self.write_class_body()
 
     def make_class_file_path(self):
         class_module_name = util.class_name_to_private_module_name(self.class_name)
         return self.make_output_file_path(class_module_name + '.py')
 
     def write_class_declaration(self):
+        print('import attr')
+        print('')
+        print('@attr.s')
         print('class ' + self.class_name + '(object):')
 
     def write_class_description(self):
@@ -32,43 +38,34 @@ class ClassGenerator(PythonFileGenerator):
         if description:
             print('    """' + description + '"""')
 
-    def write_constructor(self):
-        self.write_constructor_parameters()
-        self.write_required_property_checks()
-        self.write_attribute_assignments()
+    def write_class_body(self):
+        property_schemas = self.class_schema['properties']
+        if not property_schemas:
+            print('    pass')
+            return
 
-    def write_constructor_parameters(self):
-        result = '    def __init__(self'
+        schema_property_names = sorted(property_schemas.keys())
 
-        for schema_property_name in self.class_schema['properties']:
-            result += ',\n'
-            python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
-            property_schema = self.class_schema['properties'][schema_property_name]
-            initializer = self.make_initializer(property_schema)
-            result += '        ' + python_property_name + '=' + str(initializer)
-
-        result += '):'
-        print(result)
-
-    def write_required_property_checks(self):
-        required = self.class_schema.get('required')
-        if required:
-            print()
-            print('        missing_properties = []')
-            for schema_property_name in required:
+        # attrs requires that mandatory attributes be declared before optional
+        # attributes.
+        if self.required_property_names:
+            for schema_property_name in self.required_property_names:
                 python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
-                print('        if ' + python_property_name + ' is None:')
-                print('            missing_properties.append(' +  repr(python_property_name) + ')')
+                print('    ' + python_property_name + ' = attr.ib()')
 
-            print('        if missing_properties:')
-            print('            joined_properties = \', \'.join(missing_properties)')
-            print('            raise TypeError(\'required properties of class ' + self.class_name + ' were not provided: \' + joined_properties)')
+        for schema_property_name in schema_property_names:
+            if self.is_optional(schema_property_name):
+                python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
+                property_schema = property_schemas[schema_property_name]
+                default_setter = self.make_default_setter(property_schema)
+                print('    ' + python_property_name + ' = attr.ib(' + default_setter + ')')
 
-    def write_attribute_assignments(self):
-        print()
-        for schema_property_name in self.class_schema['properties']:
-            python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
-            print('        self.' + python_property_name + ' = ' + python_property_name)
+    def is_optional(self, schema_property_name):
+        return not self.required_property_names or schema_property_name not in self.required_property_names
+
+    def make_default_setter(self, property_schema):
+        initializer = self.make_initializer(property_schema)
+        return 'default=' + str(initializer)
 
     def make_initializer(self, property_schema):
         default = property_schema.get('default')
@@ -87,9 +84,10 @@ class ClassGenerator(PythonFileGenerator):
         hint_key = self.class_name + '.' + schema_property_name
         property_name_hint = self.get_hint(hint_key, 'PropertyNameHint')
         if not property_name_hint:
-            return schema_property_name
+            property_name = schema_property_name
         else:
-            return property_name_hint['arguments']['pythonPropertyName']
+            property_name = property_name_hint['arguments']['pythonPropertyName']
+        return util.to_underscore_separated_name(property_name)
 
     def get_hint(self, hint_key, hint_kind):
         if not self.code_gen_hints or hint_key not in self.code_gen_hints:

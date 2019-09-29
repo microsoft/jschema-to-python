@@ -24,10 +24,9 @@ def to_underscore_separated_name(name):
             next_char = ch
         else:
             next_char = ch.lower()
-            if first_char:
-                first_char = False
-            else:
+            if not first_char:
                 next_char = '_' + next_char
+        first_char = False
 
         result += next_char
     return result
@@ -38,7 +37,7 @@ def class_name_to_private_module_name(class_name):
     return '_' + to_underscore_separated_name(class_name)
 
 def unpickle_file(path):
-    with open(path, mode='rt', encoding='utf-8') as file_obj:
+    with open(path, mode='rt') as file_obj:
         contents = file_obj.read()
         return jsonpickle.decode(contents)
 
