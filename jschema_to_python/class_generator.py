@@ -7,6 +7,8 @@ class ClassGenerator(PythonFileGenerator):
         super(ClassGenerator, self).__init__(output_directory)
         self.class_schema = class_schema
         self.required_property_names = class_schema.get('required')
+        if self.required_property_names:
+            self.required_property_names.sort()
         self.class_name = class_name
         self.code_gen_hints = code_gen_hints
 
@@ -15,7 +17,7 @@ class ClassGenerator(PythonFileGenerator):
 
     def generate(self):
         file_path = self.make_class_file_path()
-        with open(file_path, 'w', encoding='utf-8') as sys.stdout:
+        with open(file_path, 'w') as sys.stdout:
             self.write_generation_comment()
             self.write_class_declaration()
             self.write_class_description()
@@ -27,7 +29,7 @@ class ClassGenerator(PythonFileGenerator):
 
     def write_class_declaration(self):
         print('import attr')
-        print()
+        print('')
         print('@attr.s')
         print('class ' + self.class_name + '(object):')
 
@@ -38,6 +40,11 @@ class ClassGenerator(PythonFileGenerator):
 
     def write_class_body(self):
         property_schemas = self.class_schema['properties']
+        if not property_schemas:
+            print('    pass')
+            return
+
+        schema_property_names = sorted(property_schemas.keys())
 
         # attrs requires that mandatory attributes be declared before optional
         # attributes.
@@ -46,7 +53,7 @@ class ClassGenerator(PythonFileGenerator):
                 python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
                 print('    ' + python_property_name + ' = attr.ib()')
 
-        for schema_property_name in property_schemas:
+        for schema_property_name in schema_property_names:
             if self.is_optional(schema_property_name):
                 python_property_name = self.make_python_property_name_from_schema_property_name(schema_property_name)
                 property_schema = property_schemas[schema_property_name]

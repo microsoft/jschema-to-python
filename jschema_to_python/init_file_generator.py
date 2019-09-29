@@ -14,7 +14,7 @@ class InitFileGenerator(PythonFileGenerator):
 
     def generate(self):
         file_path = self.make_output_file_path('__init__.py')
-        with open(file_path, 'w', encoding='utf-8') as sys.stdout:
+        with open(file_path, 'w') as sys.stdout:
             self.write_generation_comment()
             self.write_import_statements()
 
@@ -23,7 +23,8 @@ class InitFileGenerator(PythonFileGenerator):
 
         definition_schemas = self.root_schema.get('definitions')
         if definition_schemas:
-            for definition_key in definition_schemas:
+            definition_keys = sorted(definition_schemas.keys())
+            for definition_key in definition_keys:
                 class_name = util.capitalize_first_letter(definition_key)
                 self.write_import_statement(class_name)
 
