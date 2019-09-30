@@ -9,5 +9,5 @@ if not __package__:
 
 from jschema_to_python.driver import main as _main  # noqa
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(_main())
