@@ -66,7 +66,7 @@ class ClassGenerator(PythonFileGenerator):
                 property_schema = property_schemas[schema_property_name]
                 default_setter = self.make_default_setter(property_schema)
                 print(
-                    "    " + python_property_name + " = attr.ib(" + default_setter + ")"
+                    "    " + python_property_name + " = attr.ib(" + default_setter + ", metadata={\"schema_property_name\": \"" + schema_property_name + "\"})"
                 )
 
     def is_optional(self, schema_property_name):
