@@ -40,9 +40,7 @@ def _remove_properties_with_default_values(obj, dict):
 
 def _change_python_property_names_to_schema_property_names(obj, dict):
     for field in attr.fields(obj.__class__):
-        dict_entry = dict.get(field.name)
-        if dict_entry:
-            schema_property_name = field.metadata.get("schema_property_name")
-            if schema_property_name and schema_property_name != field.name:
-                dict[schema_property_name] = dict[field.name]
-                del dict[field.name]
+        schema_property_name = field.metadata.get("schema_property_name")
+        if schema_property_name and schema_property_name != field.name and field.name in dict:
+            dict[schema_property_name] = dict[field.name]
+            del dict[field.name]
