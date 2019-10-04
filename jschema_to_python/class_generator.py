@@ -88,6 +88,12 @@ class ClassGenerator(PythonFileGenerator):
                     default = (
                         '"' + default + '"'
                     )  # The black formatter wants double-quotes.
+                elif type == "array":
+                    # It isn't safe to specify a mutable object as a default value,
+                    # because all new instances share the same mutable object, and
+                    # one of them might mutate it, affecting all future instances!
+                    # attr.Factory creates a new value for each instance.
+                    default="attr.Factory(lambda: " + str(default) + ")"
             elif property_schema.get("enum"):
                 default = '"' + default + '"'
             return default

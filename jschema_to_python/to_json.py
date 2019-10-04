@@ -34,8 +34,16 @@ def _generated_class_serializer(obj):
 def _remove_properties_with_default_values(obj, dict):
     for field in attr.fields(obj.__class__):
         dict_entry = dict.get(field.name)
-        if dict_entry == field.default and field.name in dict:
+        if value_is_default(dict_entry, field.default) and field.name in dict:
             del dict[field.name]
+
+
+def value_is_default(dict_entry, default_value):
+    if type(default_value) == attr._make.Factory:
+        value = default_value.factory()
+    else:
+        value = default_value
+    return dict_entry == value
 
 
 def _change_python_property_names_to_schema_property_names(obj, dict):
