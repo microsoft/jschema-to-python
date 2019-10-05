@@ -5,7 +5,7 @@ import jschema_to_python.class_generator as cg
 
 def test_required_property(tmp_path):
     verify(
-        class_schema={"properties": {"req": {"type": "int"}}, "required": ["req"]},
+        class_schema={"properties": {"requiredProperty": {"type": "int"}}, "required": ["requiredProperty"]},
         class_name="RequiredProperty",
         expected_file_name="_required_property.py",
         tmp_path=tmp_path,
@@ -14,7 +14,7 @@ def test_required_property(tmp_path):
 
 def test_optional_property(tmp_path):
     verify(
-        class_schema={"properties": {"opt": {"type": "int", "default": 42}}},
+        class_schema={"properties": {"optionalProperty": {"type": "int", "default": 42}}},
         class_name="OptionalProperty",
         expected_file_name="_optional_property.py",
         tmp_path=tmp_path,

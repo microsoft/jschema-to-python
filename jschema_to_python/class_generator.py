@@ -53,21 +53,25 @@ class ClassGenerator(PythonFileGenerator):
         # attributes.
         if self.required_property_names:
             for schema_property_name in self.required_property_names:
-                python_property_name = self.make_python_property_name_from_schema_property_name(
-                    schema_property_name
-                )
-                print("    " + python_property_name + " = attr.ib()")
+                attrib = self.make_attrib(schema_property_name)
+                print(attrib)
 
         for schema_property_name in schema_property_names:
             if self.is_optional(schema_property_name):
-                python_property_name = self.make_python_property_name_from_schema_property_name(
-                    schema_property_name
-                )
-                property_schema = property_schemas[schema_property_name]
-                default_setter = self.make_default_setter(property_schema)
-                print(
-                    "    " + python_property_name + " = attr.ib(" + default_setter + ", metadata={\"schema_property_name\": \"" + schema_property_name + "\"})"
-                )
+                attrib = self.make_attrib(schema_property_name)
+                print(attrib)
+
+    def make_attrib(self, schema_property_name):
+        python_property_name = self.make_python_property_name_from_schema_property_name(
+            schema_property_name
+        )
+        attrib = "".join(["    ", python_property_name, " = attr.ib("])
+        if self.is_optional(schema_property_name):
+            property_schema = self.class_schema["properties"][schema_property_name]
+            default_setter = self.make_default_setter(property_schema)
+            attrib = "".join([attrib, default_setter, ", "])
+        attrib = "".join([attrib, "metadata={\"schema_property_name\": \"", schema_property_name, "\"})"])
+        return attrib
 
     def is_optional(self, schema_property_name):
         return (

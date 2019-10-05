@@ -5,4 +5,4 @@ import attr
 
 @attr.s
 class OptionalProperty(object):
-    opt = attr.ib(default=42, metadata={"schema_property_name": "opt"})
+    optional_property = attr.ib(default=42, metadata={"schema_property_name": "optionalProperty"})

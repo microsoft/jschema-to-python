@@ -5,4 +5,4 @@ import attr
 
 @attr.s
 class RequiredProperty(object):
-    req = attr.ib()
+    required_property = attr.ib(metadata={"schema_property_name": "requiredProperty"})
