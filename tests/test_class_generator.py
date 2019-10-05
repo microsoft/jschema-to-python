@@ -21,3 +21,23 @@ def test_required_property(tmp_path):
     expected = expected.replace("$js2p_version$", js2p.__version__)
 
     assert actual == expected
+
+
+def test_optional_property(tmp_path):
+    class_generator = cg.ClassGenerator(
+        class_schema={"properties": {"opt": {"type": "int", "default": 42}}},
+        class_name="OptionalProperty",
+        code_gen_hints=None,
+        output_directory=str(tmp_path),
+    )
+    class_generator.generate()
+
+    with open(class_generator.file_path, "r") as fileObj:
+        actual = fileObj.read()
+
+    with open("tests/test_files/_optional_property.py", "r") as fileObj:
+        expected = fileObj.read()
+
+    expected = expected.replace("$js2p_version$", js2p.__version__)
+
+    assert actual == expected
