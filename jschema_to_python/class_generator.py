@@ -12,13 +12,13 @@ class ClassGenerator(PythonFileGenerator):
             self.required_property_names.sort()
         self.class_name = class_name
         self.code_gen_hints = code_gen_hints
+        self.file_path = self.make_class_file_path()
 
     def __del__(self):
         sys.stdout = sys.__stdout__
 
     def generate(self):
-        file_path = self.make_class_file_path()
-        with open(file_path, "w") as sys.stdout:
+        with open(self.file_path, "w") as sys.stdout:
             self.write_generation_comment()
             self.write_class_declaration()
             self.write_class_description()
