@@ -17,19 +17,19 @@ class InitFileGenerator(PythonFileGenerator):
         file_path = self.make_output_file_path("__init__.py")
         with open(file_path, "w") as sys.stdout:
             self.write_generation_comment()
-            self.write_import_statements()
+            self._write_import_statements()
 
-    def write_import_statements(self):
-        self.write_import_statement(self.root_class_name)
+    def _write_import_statements(self):
+        self._write_import_statement(self.root_class_name)
 
         definition_schemas = self.root_schema.get("definitions")
         if definition_schemas:
             definition_keys = sorted(definition_schemas.keys())
             for definition_key in definition_keys:
                 class_name = util.capitalize_first_letter(definition_key)
-                self.write_import_statement(class_name)
+                self._write_import_statement(class_name)
 
-    def write_import_statement(self, class_name):
+    def _write_import_statement(self, class_name):
         class_module_name = util.class_name_to_private_module_name(class_name)
         print(
             "from "

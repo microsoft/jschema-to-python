@@ -5,10 +5,10 @@ from jschema_to_python import __version__
 
 
 def main():
-    parser = init_parser()
+    parser = _init_parser()
     args = parser.parse_args()
 
-    display_args(args)
+    _display_args(args)
 
     generator = ObjectModelModuleGenerator(args)
     generator.generate()
@@ -17,7 +17,7 @@ def main():
         print("Done.")
 
 
-def init_parser():
+def _init_parser():
     parser = argparse.ArgumentParser(
         description="Generate source code for a set of Python classes from a JSON schema."
     )
@@ -62,7 +62,7 @@ def init_parser():
     return parser
 
 
-def display_args(args):
+def _display_args(args):
     if args.verbose:
         print(
             __package__
