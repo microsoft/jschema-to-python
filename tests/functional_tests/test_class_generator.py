@@ -3,25 +3,23 @@ import jschema_to_python as js2p
 import jschema_to_python.class_generator as cg
 
 
-def test_required_property(tmp_path):
-    verify(
-        class_schema={"properties": {"requiredProperty": {"type": "int"}}, "required": ["requiredProperty"]},
-        class_name="RequiredProperty",
-        expected_file_name="_required_property.py",
+def test_class_generation(tmp_path):
+    _verify(
+        class_schema={
+            "description": "This is a test class.",
+            "properties": {
+                "requiredProperty": {"type": "int"},
+                "optionalProperty": {"type": "int", "default": 42},
+            },
+            "required": ["requiredProperty"],
+        },
+        class_name="TestClass",
+        expected_file_name="_test_class.py",
         tmp_path=tmp_path,
     )
 
 
-def test_optional_property(tmp_path):
-    verify(
-        class_schema={"properties": {"optionalProperty": {"type": "int", "default": 42}}},
-        class_name="OptionalProperty",
-        expected_file_name="_optional_property.py",
-        tmp_path=tmp_path,
-    )
-
-
-def verify(class_schema, class_name, expected_file_name, tmp_path):
+def _verify(class_schema, class_name, expected_file_name, tmp_path):
     class_generator = cg.ClassGenerator(
         class_schema=class_schema,
         class_name=class_name,

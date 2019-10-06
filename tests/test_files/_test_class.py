@@ -4,5 +4,8 @@ import attr
 
 
 @attr.s
-class OptionalProperty(object):
+class TestClass(object):
+    """This is a test class."""
+
+    required_property = attr.ib(metadata={"schema_property_name": "requiredProperty"})
     optional_property = attr.ib(default=42, metadata={"schema_property_name": "optionalProperty"})
