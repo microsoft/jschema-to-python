@@ -34,6 +34,7 @@ def _init_parser():
         "-m",
         "--module-name",
         help="name of the module containing the object model classes",
+        required=True,
     )
     parser.add_argument(
         "-r",
