@@ -7,7 +7,7 @@ Usage
 =====
 ::
 
-    python -m jschema_to_python [-h] -s SCHEMA_PATH -o OUTPUT_DIRECTORY [-m MODULE_NAME] -r ROOT_CLASS_NAME [-g HINTS_FILE_PATH] [-f] [-v]
+    python -m jschema_to_python [-h] -s SCHEMA_PATH -o OUTPUT_DIRECTORY -m MODULE_NAME -r ROOT_CLASS_NAME [-g HINTS_FILE_PATH] [-f] [-v]
 
     Generate source code for a set of Python classes from a JSON schema.
 
