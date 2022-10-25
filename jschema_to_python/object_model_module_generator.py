@@ -1,8 +1,9 @@
 import os
 
 import jschema_to_python.utilities as util
+from jschema_to_python.class_generator import (ClassGenerator,
+                                               DataclassesClassGenerator)
 from jschema_to_python.init_file_generator import InitFileGenerator
-from jschema_to_python.class_generator import ClassGenerator
 
 
 class ObjectModelModuleGenerator:
@@ -13,6 +14,7 @@ class ObjectModelModuleGenerator:
         self.root_schema = self.read_schema(args.schema_path)
         self.code_gen_hints = self.read_code_gen_hints(args.hints_file_path)
         self.root_class_name = args.root_class_name
+        self.library = args.library
 
     def generate(self):
         util.create_directory(self.output_directory, self.force)
@@ -30,12 +32,22 @@ class ObjectModelModuleGenerator:
         init_file_generator.generate()
 
     def generate_root_class(self):
-        class_generator = ClassGenerator(
-            self.root_schema,
-            self.root_class_name,
-            self.code_gen_hints,
-            self.output_directory,
-        )
+        if self.library == "attrs":
+            class_generator = ClassGenerator(
+                self.root_schema,
+                self.root_class_name,
+                self.code_gen_hints,
+                self.output_directory,
+            )
+        else:
+            assert self.library == "dataclasses"
+            class_generator = DataclassesClassGenerator(
+                self.root_schema,
+                self.root_class_name,
+                self.code_gen_hints,
+                self.output_directory,
+                self.module_name,
+            )
         class_generator.generate()
 
     def generate_definition_classes(self):
@@ -46,9 +58,22 @@ class ObjectModelModuleGenerator:
 
     def generate_definition_class(self, definition_key, definition_schema):
         class_name = util.capitalize_first_letter(definition_key)
-        class_generator = ClassGenerator(
-            definition_schema, class_name, self.code_gen_hints, self.output_directory
-        )
+        if self.library == "attrs":
+            class_generator = ClassGenerator(
+                definition_schema,
+                class_name,
+                self.code_gen_hints,
+                self.output_directory,
+            )
+        else:
+            assert self.library == "dataclasses"
+            class_generator = DataclassesClassGenerator(
+                definition_schema,
+                class_name,
+                self.code_gen_hints,
+                self.output_directory,
+                self.module_name,
+            )
         class_generator.generate()
 
     def read_schema(self, schema_path):
