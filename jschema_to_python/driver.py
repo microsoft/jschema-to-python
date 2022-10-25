@@ -1,7 +1,8 @@
 import argparse
 
-from jschema_to_python.object_model_module_generator import ObjectModelModuleGenerator
 from jschema_to_python import __version__
+from jschema_to_python.object_model_module_generator import \
+    ObjectModelModuleGenerator
 
 
 def main():
@@ -59,6 +60,13 @@ def _init_parser():
         default=0,
         help="increase output verbosity (may be specified up to two times)",
     )
+    parser.add_argument(
+        "-l",
+        "--library",
+        help="the library to use for code generation (default: attr)",
+        default="attr",
+        choices=["attr", "dataclasses"],
+    )
     return parser
 
 
@@ -75,6 +83,7 @@ def _display_args(args):
         print("    to module " + args.module_name)
         print("    in directory " + args.output_directory)
         print("    with root class " + args.root_class_name)
+        print("    using " + args.library)
         if args.hints_file_path:
             print("    with code generation hints from " + args.hints_file_path)
 
